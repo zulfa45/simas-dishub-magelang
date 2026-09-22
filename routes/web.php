@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IncomingLetterController;
+use App\Http\Controllers\AssignmentController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -15,6 +16,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // Surat Masuk
     Route::resource('incoming-letters', IncomingLetterController::class);
+
+    // Penugasan (Disposisi)
+    Route::get('incoming-letters/{letter}/assignments/create', [AssignmentController::class, 'create'])->name('assignments.create');
+    Route::post('incoming-letters/{letter}/assignments', [AssignmentController::class, 'store'])->name('assignments.store');
 });
 
 Route::middleware('auth')->group(function () {
