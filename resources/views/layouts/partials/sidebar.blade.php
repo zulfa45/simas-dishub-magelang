@@ -42,10 +42,8 @@
         <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Tugas Saya
         </div>
+        <a href="{{ route('my-tasks.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('my-tasks.*') ? 'bg-gray-700' : '' }}">Daftar Tugas</a>
         <a href="{{ route('incoming-letters.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('incoming-letters.*') ? 'bg-gray-700' : '' }}">Surat Masuk</a>
-        <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Belum Diproses</a>
-        <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Dalam Proses</a>
-        <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Selesai</a>
         @endrole
 
     </nav>

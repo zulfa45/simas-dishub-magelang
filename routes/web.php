@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IncomingLetterController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\MyTaskController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -20,6 +21,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Penugasan (Disposisi)
     Route::get('incoming-letters/{letter}/assignments/create', [AssignmentController::class, 'create'])->name('assignments.create');
     Route::post('incoming-letters/{letter}/assignments', [AssignmentController::class, 'store'])->name('assignments.store');
+
+    // Tugas Saya (Untuk Karyawan/Penerima Tugas)
+    Route::get('my-tasks', [MyTaskController::class, 'index'])->name('my-tasks.index');
+    Route::get('my-tasks/{assignment}', [MyTaskController::class, 'show'])->name('my-tasks.show');
+    Route::post('my-tasks/{assignment}/respond', [MyTaskController::class, 'respond'])->name('my-tasks.respond');
 });
 
 Route::middleware('auth')->group(function () {
