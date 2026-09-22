@@ -19,6 +19,7 @@
         <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Sistem
         </div>
+        <a href="{{ route('news.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('news.*') ? 'bg-gray-700' : '' }}">Kelola Berita</a>
         <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Pengguna</a>
         <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Organisasi</a>
         @endrole
@@ -32,10 +33,9 @@
         <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Arsip</a>
         
         <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-            Penugasan
+            Sistem
         </div>
-        <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Penugasan</a>
-        <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Tindak Lanjut</a>
+        <a href="{{ route('news.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('news.*') ? 'bg-gray-700' : '' }}">Papan Informasi</a>
         @endrole
 
         @role('karyawan')
@@ -44,6 +44,11 @@
         </div>
         <a href="{{ route('my-tasks.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('my-tasks.*') ? 'bg-gray-700' : '' }}">Daftar Tugas</a>
         <a href="{{ route('incoming-letters.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('incoming-letters.*') ? 'bg-gray-700' : '' }}">Surat Masuk</a>
+        
+        <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            Sistem
+        </div>
+        <a href="{{ route('news.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('news.*') ? 'bg-gray-700' : '' }}">Papan Informasi</a>
         @endrole
 
     </nav>

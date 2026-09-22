@@ -26,6 +26,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('my-tasks', [MyTaskController::class, 'index'])->name('my-tasks.index');
     Route::get('my-tasks/{assignment}', [MyTaskController::class, 'show'])->name('my-tasks.show');
     Route::post('my-tasks/{assignment}/respond', [MyTaskController::class, 'respond'])->name('my-tasks.respond');
+
+    // Berita & Informasi
+    Route::resource('news', \App\Http\Controllers\NewsController::class);
 });
 
 Route::middleware('auth')->group(function () {
