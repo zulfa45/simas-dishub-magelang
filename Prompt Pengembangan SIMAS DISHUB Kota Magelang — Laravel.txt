@@ -1,0 +1,1998 @@
+# SIMAS DISHUB KOTA MAGELANG
+
+## Sistem Informasi Manajemen Surat Berbasis Laravel
+
+Bangun sebuah **web application internal bernama "SIMAS DISHUB KOTA MAGELANG" (Sistem Informasi Manajemen Surat)** untuk lingkungan **Dinas Perhubungan Kota Magelang**.
+
+Aplikasi digunakan untuk mengelola seluruh alur surat masuk secara digital mulai dari:
+
+**SURAT MASUK → PEMBERITAHUAN → PENUGASAN/DISPOSISI → NOTIFIKASI → KARYAWAN → TANGGAPAN → TINDAK LANJUT → SELESAI → ARSIP**
+
+Aplikasi **WAJIB dibangun menggunakan Laravel** dan jangan menggunakan PHP Native sebagai framework utama.
+
+---
+
+# 1. TEKNOLOGI YANG WAJIB DIGUNAKAN
+
+Gunakan stack berikut:
+
+### Backend
+
+* **Laravel**
+* PHP 8.2+
+* Laravel Eloquent ORM
+* Laravel Blade
+* Laravel Middleware
+* Laravel Form Request Validation
+* Laravel Policies / Gates
+* Laravel Notifications
+* Laravel Storage
+* Laravel Database Migrations
+* Laravel Seeders
+* Laravel Factories
+* Laravel Scheduler untuk reminder deadline
+* Laravel SoftDeletes
+
+### Frontend
+
+Gunakan:
+
+* Blade Templates
+* HTML5
+* CSS3
+* JavaScript
+* Tailwind CSS
+* Alpine.js jika diperlukan
+* AJAX / Fetch API jika diperlukan
+
+Jangan membuat frontend menggunakan framework SPA seperti React/Vue kecuali memang diperlukan.
+
+### Database
+
+Gunakan:
+
+* MySQL / MariaDB
+
+Semua struktur database harus dibuat menggunakan:
+
+* Laravel Migration
+* Foreign Key
+* Index
+* Unique Constraint
+* Soft Delete jika diperlukan
+* Timestamps
+
+### Authentication
+
+Gunakan sistem authentication Laravel.
+
+Role utama:
+
+1. admin
+2. staf-loket
+3. karyawan
+
+Password harus menggunakan hashing Laravel.
+
+---
+
+# 2. PRINSIP PENGEMBANGAN
+
+Jangan membuat aplikasi hanya sebagai kumpulan CRUD.
+
+Prioritaskan:
+
+* relasi antar data
+* workflow surat
+* permission
+* notifikasi
+* penugasan
+* tanggapan
+* monitoring
+* history
+* audit log
+* keamanan
+* integritas data
+
+Setiap modul harus terhubung dengan modul lainnya.
+
+Contoh:
+
+Surat masuk dibuat oleh staf-loket.
+
+↓
+
+Surat tersimpan.
+
+↓
+
+Staf membuat pemberitahuan.
+
+↓
+
+Penerima mendapatkan notifikasi.
+
+↓
+
+Staf membuat penugasan.
+
+↓
+
+Bagian/karyawan menerima tugas.
+
+↓
+
+Karyawan membaca tugas.
+
+↓
+
+Karyawan menerima tugas.
+
+↓
+
+Karyawan mengerjakan tugas.
+
+↓
+
+Karyawan memberikan tanggapan.
+
+↓
+
+Karyawan upload bukti/dokumen.
+
+↓
+
+Status tugas menjadi selesai.
+
+↓
+
+Surat dapat diarsipkan.
+
+↓
+
+Semua aktivitas tercatat di letter_histories dan audit_logs.
+
+---
+
+# 3. ROLE SISTEM
+
+## ADMIN
+
+Admin mempunyai akses penuh.
+
+Menu:
+
+* Dashboard
+* Surat Masuk
+* Arsip
+* Kategori Surat
+* Penugasan
+* Pemberitahuan
+* Berita
+* Admin
+* Staf-Loket
+* Karyawan
+* Bagian
+* Jabatan
+* Laporan
+* Audit Log
+* Pengaturan
+* Profil
+* Trash
+
+Admin dapat:
+
+* CRUD seluruh data
+* mengaktifkan/nonaktifkan user
+* reset password
+* melihat seluruh surat
+* melihat seluruh tugas
+* melihat seluruh tanggapan
+* melihat seluruh history
+* melihat audit log
+* mengelola permission
+* mengelola organisasi
+* mengelola kategori
+* mengelola status
+* mengarsipkan surat
+* memulihkan data yang dihapus
+* menghapus permanen data tertentu
+
+---
+
+# 4. ROLE STAF-LOKET
+
+Staf-loket merupakan operator utama surat.
+
+Fitur:
+
+* Login
+* Logout
+* Dashboard
+* Surat Masuk
+* Tambah Surat
+* Edit Surat
+* Detail Surat
+* Upload Surat
+* Arsip
+* Pemberitahuan
+* Berita
+* Penugasan
+* Tindak Lanjut
+* Laporan
+* Profil
+
+Staf dapat:
+
+* membuat surat masuk
+* mengubah surat
+* menghapus surat sesuai permission
+* upload file
+* membuat pemberitahuan
+* menentukan penerima
+* membuat penugasan
+* menunjuk bagian
+* menunjuk karyawan
+* menentukan deadline
+* melihat status tugas
+* melihat tanggapan
+* melihat lampiran tindak lanjut
+* melakukan pencarian
+* membuat laporan
+* mencetak laporan
+* export PDF
+* export Excel
+
+Staf tidak boleh:
+
+* mengelola akun admin
+* mengubah permission sistem
+* mengubah pengaturan kritis
+* melihat data yang tidak memiliki hak akses
+
+---
+
+# 5. ROLE KARYAWAN
+
+Karyawan hanya dapat melihat data yang menjadi hak aksesnya.
+
+Fitur:
+
+* Dashboard
+* Surat Masuk
+* Arsip
+* Tugas Saya
+* Belum Diproses
+* Dalam Proses
+* Selesai
+* Pemberitahuan
+* Berita
+* Riwayat
+* Profil
+* Notifikasi
+
+Karyawan dapat:
+
+* membaca surat yang ditujukan kepadanya
+* membaca surat yang ditujukan ke bagiannya
+* membaca pemberitahuan
+* membaca berita
+* menerima tugas
+* mengubah status tugas
+* memberikan tanggapan
+* upload bukti tindak lanjut
+* melihat riwayat tugas sendiri
+
+Karyawan TIDAK BOLEH:
+
+* melihat seluruh surat
+* melihat surat bagian lain
+* melihat tugas karyawan lain kecuali diberikan akses
+* mengelola user
+* mengelola bagian
+* mengelola jabatan
+* melihat audit log
+* mengubah data sistem
+
+Gunakan Laravel Policy / Gate / Middleware untuk memastikan pembatasan tersebut benar-benar diterapkan pada backend, bukan hanya disembunyikan dari UI.
+
+---
+
+# 6. MODUL SURAT MASUK
+
+Buat model:
+
+`IncomingLetter`
+
+Tabel:
+
+`incoming_letters`
+
+Field minimal:
+
+* id
+* nomor_agenda
+* nomor_surat
+* tanggal_surat
+* tanggal_diterima
+* asal_surat
+* instansi_pengirim
+* perihal
+* ringkasan_isi
+* kategori_id
+* sifat
+* prioritas
+* keterangan
+* status
+* created_by
+* created_at
+* updated_at
+* deleted_at
+
+Sifat surat:
+
+* biasa
+* penting
+* segera
+* rahasia
+
+Prioritas:
+
+* rendah
+* normal
+* tinggi
+* urgent
+
+Status:
+
+* baru
+* dibaca
+* didistribusikan
+* dalam_tindak_lanjut
+* selesai
+* diarsipkan
+
+Nomor agenda dibuat otomatis.
+
+Contoh:
+
+`SM/2026/0001`
+
+atau format configurable melalui settings.
+
+---
+
+# 7. LAMPIRAN SURAT
+
+Buat tabel:
+
+`letter_attachments`
+
+Relasi:
+
+`incoming_letters hasMany letter_attachments`
+
+Field:
+
+* id
+* incoming_letter_id
+* file_name
+* file_path
+* file_type
+* file_size
+* uploaded_by
+* created_at
+* updated_at
+
+File harus disimpan menggunakan Laravel Storage.
+
+Jangan menyimpan file langsung di database.
+
+Validasi upload:
+
+* PDF
+* JPG
+* JPEG
+* PNG
+* DOC
+* DOCX
+* XLS
+* XLSX
+
+Batasi ukuran file melalui konfigurasi aplikasi.
+
+File surat tidak boleh dapat diakses hanya dengan mengetahui URL file.
+
+Gunakan route/controller yang melakukan authorization sebelum file dikirim.
+
+---
+
+# 8. PEMBERITAHUAN
+
+Model:
+
+`Notification`
+
+Tabel:
+
+`notifications`
+
+dan:
+
+`notification_recipients`
+
+Pemberitahuan dapat dibuat berdasarkan surat.
+
+Penerima:
+
+* semua karyawan
+* satu bagian
+* beberapa bagian
+* individu
+* beberapa individu
+
+Data:
+
+* id
+* title
+* content
+* incoming_letter_id
+* created_by
+* published_at
+* created_at
+* updated_at
+
+Recipient:
+
+* notification_id
+* user_id
+* read_at
+
+Ketika pemberitahuan dibuat:
+
+1. simpan pemberitahuan
+2. tentukan penerima
+3. buat recipient
+4. buat notification internal
+5. tampilkan badge unread
+6. catat history
+7. catat audit log
+
+---
+
+# 9. PENUGASAN / DISPOSISI
+
+Model:
+
+`Assignment`
+
+Tabel:
+
+`assignments`
+
+Field:
+
+* id
+* incoming_letter_id
+* title
+* instruction
+* recipient_type
+* deadline
+* priority
+* status
+* created_by
+* created_at
+* updated_at
+
+Recipient:
+
+`assignment_recipients`
+
+Field:
+
+* id
+* assignment_id
+* department_id nullable
+* user_id nullable
+* recipient_type
+
+Tipe penerima:
+
+* individu
+* bagian
+* semua_karyawan
+
+Status:
+
+* belum_dibaca
+* dibaca
+* diterima
+* dalam_proses
+* selesai
+
+Ketika tugas dibuat:
+
+1. assignment dibuat
+2. recipient dibuat
+3. penerima mendapatkan notifikasi
+4. surat berubah menjadi "didistribusikan" atau "dalam_tindak_lanjut"
+5. history dibuat
+6. audit log dibuat
+
+---
+
+# 10. TANGGAPAN KARYAWAN
+
+Model:
+
+`AssignmentResponse`
+
+Tabel:
+
+`assignment_responses`
+
+Field:
+
+* id
+* assignment_id
+* user_id
+* isi_tanggapan
+* status
+* lampiran
+* created_at
+* updated_at
+
+Karyawan dapat:
+
+* memberikan tanggapan
+* mengubah status
+* upload bukti
+* melihat tanggapan sebelumnya
+
+Staf-loket dapat melihat tanggapan dari tugas yang dibuatnya.
+
+Admin dapat melihat seluruh tanggapan.
+
+---
+
+# 11. NOTIFIKASI INTERNAL
+
+Buat sistem notifikasi internal menggunakan icon bell pada topbar.
+
+Jenis:
+
+* surat baru
+* pemberitahuan baru
+* tugas baru
+* perubahan tugas
+* deadline mendekat
+* tanggapan baru
+* status tugas berubah
+* pengumuman admin
+
+Status:
+
+* unread
+* read
+
+UI:
+
+Bell icon → badge jumlah unread → dropdown notification → halaman semua notifikasi.
+
+Gunakan Laravel Notification apabila sesuai dengan arsitektur aplikasi.
+
+---
+
+# 12. REMINDER DEADLINE
+
+Implementasikan Laravel Scheduler.
+
+Sistem mengecek assignment yang:
+
+* deadline mendekat
+* deadline hari ini
+* deadline terlewat
+
+Kemudian mengirim notification kepada penerima.
+
+Contoh reminder:
+
+* 3 hari sebelum deadline
+* 1 hari sebelum deadline
+* hari deadline
+* terlambat
+
+Jangan membuat reminder duplikat.
+
+---
+
+# 13. BERITA / INFORMASI
+
+Model:
+
+`News`
+
+Tabel:
+
+`news`
+
+Field:
+
+* id
+* title
+* content
+* image
+* category
+* target_type
+* status
+* published_at
+* created_by
+* timestamps
+* soft delete
+
+Target:
+
+* semua
+* bagian tertentu
+* individu tertentu
+
+Recipient:
+
+`news_recipients`
+
+---
+
+# 14. ORGANISASI
+
+Buat:
+
+### Departments
+
+`departments`
+
+Field:
+
+* id
+* name
+* code
+* description
+* status
+* timestamps
+* soft delete
+
+### Positions
+
+`positions`
+
+Field:
+
+* id
+* name
+* code
+* description
+* status
+* timestamps
+* soft delete
+
+### Users
+
+User mempunyai relasi:
+
+* role
+* department
+* position
+
+Contoh:
+
+User → Karyawan → Bidang tertentu → Jabatan tertentu.
+
+---
+
+# 15. DATABASE
+
+Minimal gunakan tabel:
+
+* users
+* roles
+* permissions
+* role_permissions
+* departments
+* positions
+* incoming_letters
+* letter_categories
+* letter_attachments
+* notifications
+* notification_recipients
+* assignments
+* assignment_recipients
+* assignment_responses
+* news
+* news_recipients
+* letter_histories
+* audit_logs
+* settings
+
+Tambahkan tabel lain jika diperlukan untuk membuat workflow lebih baik.
+
+Semua relasi harus menggunakan foreign key.
+
+Gunakan index untuk field yang sering digunakan pencarian/filter.
+
+Contoh:
+
+* nomor_surat
+* nomor_agenda
+* tanggal_surat
+* tanggal_diterima
+* status
+* kategori_id
+* department_id
+* created_by
+
+---
+
+# 16. LETTER HISTORY
+
+Setiap surat mempunyai timeline aktivitas.
+
+Contoh:
+
+1. Surat dibuat
+2. Surat diperbarui
+3. Surat diberitahukan
+4. Surat ditugaskan
+5. Karyawan membaca
+6. Tugas diterima
+7. Tugas diproses
+8. Tanggapan diberikan
+9. Bukti diupload
+10. Tugas selesai
+11. Surat selesai
+12. Surat diarsipkan
+
+Tabel:
+
+`letter_histories`
+
+Field:
+
+* id
+* incoming_letter_id
+* user_id
+* activity
+* description
+* related_type nullable
+* related_id nullable
+* metadata JSON nullable
+* created_at
+
+Gunakan polymorphic relation jika diperlukan.
+
+---
+
+# 17. AUDIT LOG
+
+Admin dapat melihat seluruh aktivitas sistem.
+
+Tabel:
+
+`audit_logs`
+
+Catat:
+
+* user_id
+* action
+* module
+* model_type
+* model_id
+* description
+* old_values JSON
+* new_values JSON
+* ip_address
+* user_agent
+* created_at
+
+Contoh:
+
+`Muhammad melakukan UPDATE pada surat SM/2026/0012`
+
+Audit log tidak boleh dapat diubah oleh user biasa.
+
+---
+
+# 18. DASHBOARD ADMIN
+
+Tampilkan:
+
+### Statistic Cards
+
+* Total Surat
+* Surat Bulan Ini
+* Surat Belum Diproses
+* Surat Selesai
+* Total Karyawan
+* Total Staf
+* Tugas Aktif
+* Tugas Selesai
+
+### Chart
+
+* Surat per bulan
+* Kategori surat
+* Status tindak lanjut
+
+### Activity
+
+* aktivitas terbaru
+* surat terbaru
+* tugas terbaru
+
+---
+
+# 19. DASHBOARD STAF
+
+Tampilkan:
+
+* Total Surat Masuk
+* Surat Baru
+* Surat Dalam Proses
+* Surat Selesai
+* Tugas Aktif
+* Tanggapan Terbaru
+* Surat Terbaru
+* Aktivitas Terbaru
+
+---
+
+# 20. DASHBOARD KARYAWAN
+
+Tampilkan:
+
+* Notifikasi Belum Dibaca
+* Tugas Baru
+* Tugas Dalam Proses
+* Tugas Selesai
+* Surat Terbaru
+* Pemberitahuan Terbaru
+* Deadline Terdekat
+
+---
+
+# 21. PENCARIAN SURAT
+
+Search berdasarkan:
+
+* nomor surat
+* nomor agenda
+* asal surat
+* instansi pengirim
+* perihal
+* tanggal
+* kategori
+* status
+* bagian
+* tahun
+
+Filter:
+
+* rentang tanggal
+* kategori
+* sifat
+* prioritas
+* status
+* bagian
+
+Gunakan query Eloquent yang efisien.
+
+Untuk pagination gunakan Laravel pagination.
+
+---
+
+# 22. LAPORAN
+
+Buat modul laporan.
+
+Filter:
+
+* harian
+* mingguan
+* bulanan
+* tahunan
+* kategori
+* status
+* bagian
+* rentang tanggal
+
+Output:
+
+* tampilan web
+* print
+* PDF
+* Excel
+
+Gunakan library Laravel yang sesuai untuk PDF dan Excel.
+
+Jangan membuat library export sendiri jika package Laravel yang stabil tersedia.
+
+---
+
+# 23. ARSIP
+
+Surat dengan status selesai dapat diarsipkan.
+
+Ketika diarsipkan:
+
+* status menjadi `diarsipkan`
+* history dibuat
+* audit log dibuat
+
+Arsip tetap dapat dicari.
+
+Hak akses tetap mengikuti permission.
+
+---
+
+# 24. TRASH / SOFT DELETE
+
+Gunakan Laravel SoftDeletes untuk data yang sesuai.
+
+Admin dapat:
+
+* melihat trash
+* restore
+* permanent delete
+
+User biasa tidak boleh melakukan permanent delete.
+
+---
+
+# 25. QR CODE SURAT
+
+Setiap surat memiliki QR Code.
+
+QR Code dapat berisi:
+
+* ID surat
+* nomor agenda
+* nomor surat
+* URL detail surat
+
+Namun halaman detail tetap harus melakukan authorization.
+
+Jangan membuat QR Code menjadi bypass permission.
+
+Tambahkan tombol:
+
+`Generate QR`
+
+dan:
+
+`Print QR`
+
+---
+
+# 26. KEAMANAN
+
+WAJIB menerapkan:
+
+* Laravel Authentication
+* Authorization
+* Middleware
+* Policy
+* Gate
+* Password Hashing
+* CSRF Protection
+* Form Request Validation
+* Mass Assignment Protection
+* Upload Validation
+* File Size Validation
+* MIME Validation
+* Soft Delete
+* Audit Log
+* Session Security
+* Rate Limiting jika diperlukan
+* Permission-based file access
+
+Karyawan tidak boleh dapat mengakses URL data milik user lain hanya dengan mengganti ID.
+
+Contoh:
+
+`/assignments/10`
+
+menjadi:
+
+`/assignments/11`
+
+harus tetap diperiksa menggunakan Policy.
+
+Jangan hanya mengandalkan:
+
+`@if(auth()->user()->role == ...)`
+
+pada Blade.
+
+Authorization harus diterapkan di backend.
+
+---
+
+# 27. SIDEBAR ADMIN
+
+Dashboard
+
+### Surat
+
+* Surat Masuk
+* Arsip
+* Kategori
+
+### Penugasan
+
+* Semua Penugasan
+* Aktif
+* Selesai
+
+### Informasi
+
+* Pemberitahuan
+* Berita
+
+### Pengguna
+
+* Admin
+* Staf-Loket
+* Karyawan
+
+### Organisasi
+
+* Bagian
+* Jabatan
+
+### Laporan
+
+* Laporan Surat
+
+### Sistem
+
+* Audit Log
+* Pengaturan
+* Trash
+
+### Akun
+
+* Profil
+* Logout
+
+---
+
+# 28. SIDEBAR STAF-LOKET
+
+Dashboard
+
+### Surat
+
+* Surat Masuk
+* Tambah Surat
+* Arsip
+
+### Penugasan
+
+* Penugasan
+* Tindak Lanjut
+
+### Informasi
+
+* Pemberitahuan
+* Berita
+
+### Laporan
+
+* Laporan Surat
+
+### Akun
+
+* Profil
+* Logout
+
+---
+
+# 29. SIDEBAR KARYAWAN
+
+Dashboard
+
+### Surat
+
+* Surat Masuk
+* Arsip
+
+### Tugas Saya
+
+* Belum Diproses
+* Dalam Proses
+* Selesai
+
+### Informasi
+
+* Pemberitahuan
+* Berita
+
+### Riwayat
+
+* Riwayat Aktivitas
+
+### Akun
+
+* Profil
+* Logout
+
+---
+
+# 30. UI / UX
+
+Desain harus:
+
+* profesional
+* modern
+* clean
+* formal
+* cocok untuk pemerintahan
+* mudah digunakan
+* responsive
+* desktop-first
+* mobile-friendly
+
+Gunakan:
+
+* sidebar
+* topbar
+* breadcrumb
+* notification bell
+* profile menu
+* cards
+* tables
+* modal
+* form
+* confirmation dialog
+* toast
+* badge status
+* dropdown
+* pagination
+* search
+* filter
+
+Gunakan warna profesional.
+
+Jangan menggunakan desain terlalu ramai.
+
+Gunakan konsistensi:
+
+* spacing
+* typography
+* button
+* badge
+* form
+* table
+* modal
+* alert
+
+---
+
+# 31. HALAMAN UTAMA
+
+Minimal buat halaman:
+
+### Authentication
+
+* Login
+* Forgot Password
+* Reset Password
+
+### Admin
+
+* Dashboard
+* Surat Masuk
+* Tambah Surat
+* Detail Surat
+* Edit Surat
+* Arsip
+* Kategori
+* Penugasan
+* Detail Penugasan
+* Pemberitahuan
+* Berita
+* Admin
+* Staf
+* Karyawan
+* Bagian
+* Jabatan
+* Laporan
+* Audit Log
+* Settings
+* Trash
+* Profil
+
+### Staf
+
+* Dashboard
+* Surat Masuk
+* Tambah Surat
+* Detail Surat
+* Arsip
+* Penugasan
+* Detail Penugasan
+* Pemberitahuan
+* Berita
+* Laporan
+* Profil
+
+### Karyawan
+
+* Dashboard
+* Surat
+* Detail Surat
+* Arsip
+* Tugas Saya
+* Detail Tugas
+* Tanggapan
+* Upload Bukti
+* Pemberitahuan
+* Berita
+* Riwayat
+* Profil
+
+---
+
+# 32. STRUKTUR FOLDER LARAVEL
+
+Gunakan struktur Laravel yang rapi.
+
+Contoh:
+
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── Admin/
+│   │   ├── Staff/
+│   │   ├── Employee/
+│   │   └── Auth/
+│   ├── Middleware/
+│   ├── Requests/
+│   └── Resources/
+│
+├── Models/
+│
+├── Policies/
+│
+├── Notifications/
+│
+├── Services/
+│   ├── LetterService.php
+│   ├── AssignmentService.php
+│   ├── NotificationService.php
+│   ├── AuditLogService.php
+│   └── LetterHistoryService.php
+│
+└── Helpers/
+
+database/
+├── migrations/
+├── seeders/
+└── factories/
+
+resources/
+├── views/
+│   ├── layouts/
+│   ├── components/
+│   ├── auth/
+│   ├── admin/
+│   ├── staff/
+│   └── employee/
+│
+├── css/
+└── js/
+
+routes/
+├── web.php
+└── console.php
+
+storage/
+├── app/
+│   ├── private/
+│   │   ├── letters/
+│   │   ├── attachments/
+│   │   ├── responses/
+│   │   └── news/
+│
+└── logs/
+
+---
+
+# 33. SERVICE LAYER
+
+Jangan menaruh seluruh business logic di Controller.
+
+Gunakan Service Layer.
+
+Contoh:
+
+### LetterService
+
+Mengatur:
+
+* create letter
+* update letter
+* upload attachment
+* archive letter
+* restore letter
+* generate agenda number
+* create history
+
+### AssignmentService
+
+Mengatur:
+
+* create assignment
+* assign recipient
+* update status
+* deadline
+* response
+* completion
+
+### NotificationService
+
+Mengatur:
+
+* create notification
+* recipient
+* mark read
+* unread count
+
+### AuditLogService
+
+Mengatur:
+
+* create audit
+* old values
+* new values
+* IP
+* user agent
+
+---
+
+# 34. MODEL RELATIONSHIP
+
+Implementasikan Eloquent Relationship dengan benar.
+
+Contoh:
+
+User:
+
+* belongsTo Role
+* belongsTo Department
+* belongsTo Position
+* hasMany IncomingLetter
+* hasMany Assignments
+* hasMany AssignmentResponses
+
+IncomingLetter:
+
+* belongsTo User
+* belongsTo LetterCategory
+* hasMany LetterAttachments
+* hasMany Assignments
+* hasMany LetterHistories
+
+Assignment:
+
+* belongsTo IncomingLetter
+* belongsTo User
+* hasMany AssignmentRecipients
+* hasMany AssignmentResponses
+
+Department:
+
+* hasMany Users
+* hasMany AssignmentRecipients
+
+---
+
+# 35. PERMISSION
+
+Gunakan permission granular.
+
+Contoh:
+
+### Surat
+
+* surat.view
+* surat.create
+* surat.update
+* surat.delete
+* surat.archive
+* surat.restore
+
+### Penugasan
+
+* assignment.view
+* assignment.create
+* assignment.update
+* assignment.delete
+* assignment.assign
+* assignment.respond
+
+### User
+
+* user.view
+* user.create
+* user.update
+* user.delete
+* user.activate
+* user.reset_password
+
+### Laporan
+
+* report.view
+* report.export
+* report.print
+
+### Sistem
+
+* audit.view
+* settings.manage
+
+Permission harus digunakan melalui middleware/policy.
+
+---
+
+# 36. ROUTE
+
+Gunakan route group berdasarkan role.
+
+Contoh:
+
+`/admin/...`
+
+`/staff/...`
+
+`/employee/...`
+
+Gunakan middleware:
+
+* auth
+* role
+* permission
+
+Contoh konsep:
+
+`middleware(['auth', 'role:admin'])`
+
+atau middleware permission yang sesuai.
+
+Jangan mengandalkan URL saja untuk keamanan.
+
+---
+
+# 37. ERD
+
+Sebelum coding, buat ERD yang menunjukkan hubungan:
+
+users
+→ roles
+
+users
+→ departments
+
+users
+→ positions
+
+users
+→ incoming_letters
+
+incoming_letters
+→ letter_categories
+
+incoming_letters
+→ letter_attachments
+
+incoming_letters
+→ assignments
+
+assignments
+→ assignment_recipients
+
+assignments
+→ assignment_responses
+
+incoming_letters
+→ letter_histories
+
+notifications
+→ notification_recipients
+
+news
+→ news_recipients
+
+users
+→ audit_logs
+
+---
+
+# 38. SEEDER
+
+Buat Laravel Seeder untuk data awal.
+
+Minimal:
+
+### Roles
+
+* Admin
+* Staf-Loket
+* Karyawan
+
+### Permission
+
+Masukkan seluruh permission yang dibutuhkan.
+
+### Admin default
+
+Buat akun admin awal melalui seeder.
+
+### Data organisasi contoh
+
+* beberapa bagian
+* beberapa jabatan
+* beberapa user karyawan
+
+Jangan hardcode data user di Controller.
+
+---
+
+# 39. FACTORY
+
+Buat Model Factory untuk:
+
+* User
+* IncomingLetter
+* Assignment
+* AssignmentResponse
+* Notification
+* News
+
+Gunakan Factory untuk testing dan dummy data.
+
+---
+
+# 40. TESTING
+
+Gunakan Laravel Feature Test dan Unit Test.
+
+Minimal test:
+
+### Authentication
+
+* login berhasil
+* login gagal
+* logout
+
+### Authorization
+
+* admin dapat mengakses admin
+* staf tidak dapat mengakses admin
+* karyawan tidak dapat mengakses data privat
+
+### Surat
+
+* membuat surat
+* update surat
+* upload attachment
+* archive surat
+
+### Assignment
+
+* membuat tugas
+* penerima mendapatkan tugas
+* update status
+* memberikan tanggapan
+
+### Notification
+
+* notification dibuat
+* recipient dibuat
+* unread/read
+
+### Security
+
+Test IDOR.
+
+Contoh:
+
+Karyawan A tidak boleh mengakses assignment milik Karyawan B.
+
+---
+
+# 41. WORKFLOW DETAIL
+
+## Workflow Surat
+
+1. Staf login.
+2. Membuka Surat Masuk.
+3. Klik Tambah Surat.
+4. Mengisi data.
+5. Upload file.
+6. Sistem membuat nomor agenda.
+7. Surat disimpan.
+8. History dibuat.
+9. Audit log dibuat.
+10. Surat muncul di dashboard.
+
+## Workflow Pemberitahuan
+
+1. Staf membuka detail surat.
+2. Klik "Buat Pemberitahuan".
+3. Mengisi judul dan isi.
+4. Memilih target.
+5. Publish.
+6. Sistem membuat recipient.
+7. Sistem membuat notification.
+8. Penerima melihat bell notification.
+9. Ketika dibuka, status menjadi read.
+10. History dibuat.
+
+## Workflow Penugasan
+
+1. Staf membuka surat.
+2. Klik "Buat Penugasan".
+3. Masukkan instruksi.
+4. Pilih bagian/karyawan.
+5. Tentukan deadline.
+6. Simpan.
+7. Recipient dibuat.
+8. Notification dibuat.
+9. Status tugas = Belum Dibaca.
+10. History dibuat.
+
+## Workflow Karyawan
+
+1. Karyawan login.
+2. Melihat notification.
+3. Membuka tugas.
+4. Status → Dibaca.
+5. Klik Terima Tugas.
+6. Status → Diterima.
+7. Mulai bekerja.
+8. Status → Dalam Proses.
+9. Memberikan tanggapan.
+10. Upload bukti.
+11. Status → Selesai.
+12. Staf mendapatkan notification.
+13. History dibuat.
+
+## Workflow Arsip
+
+1. Semua tugas selesai.
+2. Surat berstatus selesai.
+3. Admin/Staf melakukan arsip.
+4. Status surat → Diarsipkan.
+5. History dibuat.
+6. Audit log dibuat.
+
+---
+
+# 42. BEFORE CODING
+
+**Jangan langsung membuat seluruh kode.**
+
+Sebelum implementasi, tampilkan terlebih dahulu:
+
+## Tahap 1 — Arsitektur
+
+Jelaskan:
+
+* Laravel version
+* PHP version
+* database
+* frontend stack
+* authentication
+* authorization
+* notification
+* storage
+* scheduler
+* PDF
+* Excel
+* QR Code
+
+## Tahap 2 — ERD
+
+Buat ERD lengkap.
+
+Tampilkan:
+
+* tabel
+* field penting
+* primary key
+* foreign key
+* relationship
+
+## Tahap 3 — Database
+
+Buat struktur seluruh tabel.
+
+Untuk setiap tabel tampilkan:
+
+* nama field
+* tipe data
+* nullable
+* default
+* foreign key
+* index
+
+## Tahap 4 — Folder Structure
+
+Tampilkan struktur folder Laravel.
+
+## Tahap 5 — Route
+
+Tampilkan seluruh route berdasarkan:
+
+* auth
+* admin
+* staf
+* karyawan
+
+## Tahap 6 — Middleware
+
+Tampilkan middleware:
+
+* auth
+* role
+* permission
+* security
+
+## Tahap 7 — Permission
+
+Tampilkan permission berdasarkan modul.
+
+## Tahap 8 — Workflow
+
+Tampilkan workflow masing-masing role.
+
+## Tahap 9 — Wireframe
+
+Buat wireframe tekstual untuk:
+
+* login
+* dashboard
+* surat masuk
+* tambah surat
+* detail surat
+* penugasan
+* detail tugas
+* pemberitahuan
+* berita
+* user
+* organisasi
+* laporan
+* audit log
+* profil
+
+## Tahap 10 — Implementation Plan
+
+Buat tahapan implementasi.
+
+Contoh:
+
+### Phase 1
+
+Laravel setup + authentication + database
+
+### Phase 2
+
+Role + permission
+
+### Phase 3
+
+Organization
+
+### Phase 4
+
+Incoming Letter
+
+### Phase 5
+
+Attachment
+
+### Phase 6
+
+Notification
+
+### Phase 7
+
+Assignment
+
+### Phase 8
+
+Assignment Response
+
+### Phase 9
+
+News
+
+### Phase 10
+
+History + Audit Log
+
+### Phase 11
+
+Dashboard
+
+### Phase 12
+
+Search + Filter
+
+### Phase 13
+
+Report + PDF + Excel
+
+### Phase 14
+
+QR Code
+
+### Phase 15
+
+Reminder
+
+### Phase 16
+
+Trash + Archive
+
+### Phase 17
+
+Security hardening
+
+### Phase 18
+
+Testing
+
+---
+
+# 43. ATURAN CODING
+
+Saat implementasi:
+
+1. Gunakan Laravel sesuai best practice.
+2. Jangan menggunakan PHP Native sebagai pengganti Laravel.
+3. Gunakan Eloquent ORM.
+4. Gunakan Migration.
+5. Gunakan Seeder.
+6. Gunakan Factory.
+7. Gunakan Form Request.
+8. Gunakan Policy/Gate.
+9. Gunakan Middleware.
+10. Gunakan Service Layer untuk business logic kompleks.
+11. Gunakan Blade Component untuk UI berulang.
+12. Gunakan reusable component untuk button, modal, table, badge, alert, form.
+13. Jangan mengulang kode yang sama.
+14. Gunakan database transaction untuk proses multi-table yang harus atomik.
+15. Gunakan eager loading untuk mencegah N+1 query.
+16. Gunakan pagination.
+17. Gunakan validation sebelum menyimpan data.
+18. Jangan percaya input dari frontend.
+19. Seluruh permission harus diverifikasi di server.
+20. File privat tidak boleh diakses langsung tanpa authorization.
+21. Gunakan `.env` untuk konfigurasi sensitif.
+22. Jangan menyimpan password dalam plaintext.
+23. Jangan hardcode password database.
+24. Jangan hardcode secret key.
+25. Jangan menghapus data penting secara permanen tanpa permission.
+26. Gunakan soft delete jika sesuai.
+27. Setiap aktivitas penting harus masuk history/audit log.
+28. Gunakan database transaction pada workflow surat, pemberitahuan, dan penugasan.
+29. Buat kode modular dan scalable.
+30. Jangan membuat fitur yang tidak diminta tanpa alasan teknis yang jelas.
+
+---
+
+# 44. OUTPUT YANG DIHARAPKAN
+
+Pada tahap pertama, JANGAN langsung memberikan seluruh source code.
+
+Berikan terlebih dahulu:
+
+1. Arsitektur aplikasi
+2. Tech stack
+3. ERD
+4. Struktur database
+5. Relationship model
+6. Struktur folder Laravel
+7. Daftar route
+8. Middleware
+9. Permission matrix
+10. Workflow setiap role
+11. Wireframe
+12. Implementation roadmap
+
+Setelah rancangan disetujui, implementasikan secara bertahap.
+
+Setiap tahap harus menghasilkan kode yang dapat dijalankan.
+
+Setelah setiap modul selesai:
+
+* cek migration
+* cek model
+* cek relationship
+* cek controller
+* cek request validation
+* cek policy
+* cek route
+* cek Blade
+* cek permission
+* cek workflow
+* cek database transaction
+* cek error handling
+
+Jangan menganggap modul selesai hanya karena CRUD sudah dapat digunakan.
+
+Pastikan seluruh workflow terintegrasi.
+
+---
+
+# 45. TARGET AKHIR
+
+Target akhir adalah aplikasi internal:
+
+**SIMAS DISHUB KOTA MAGELANG**
+
+yang memiliki workflow terintegrasi:
+
+**Surat Masuk**
+↓
+**Pemberitahuan**
+↓
+**Penugasan / Disposisi**
+↓
+**Notifikasi**
+↓
+**Karyawan / Bagian**
+↓
+**Tanggapan**
+↓
+**Upload Bukti**
+↓
+**Monitoring**
+↓
+**Selesai**
+↓
+**Arsip**
+
+Dengan:
+
+* Laravel
+* MySQL
+* Blade
+* Tailwind CSS
+* Alpine.js
+* Eloquent ORM
+* Middleware
+* Policy
+* Permission
+* Notification
+* Storage
+* Scheduler
+* Soft Delete
+* Audit Log
+* Letter History
+* PDF Export
+* Excel Export
+* QR Code
+* Responsive UI
+* Secure File Access
+
+Aplikasi harus dibuat **modular, aman, maintainable, scalable, dan siap dikembangkan** untuk modul berikutnya seperti:
+
+* surat keluar
+* disposisi resmi
+* agenda kegiatan
+* agenda pimpinan
+* pengarsipan dokumen
+* administrasi pegawai
+* monitoring kegiatan
+* dan modul administrasi internal lainnya.
