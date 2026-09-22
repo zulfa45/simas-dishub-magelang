@@ -29,6 +29,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Berita & Informasi
     Route::resource('news', \App\Http\Controllers\NewsController::class);
+
+    // Audit Log (Hanya Admin)
+    Route::get('audit-logs', [\App\Http\Controllers\AuditLogController::class, 'index'])->name('audit-logs.index');
 });
 
 Route::middleware('auth')->group(function () {
