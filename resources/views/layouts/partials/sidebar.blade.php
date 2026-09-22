@@ -12,7 +12,7 @@
         <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Surat
         </div>
-        <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Surat Masuk</a>
+        <a href="{{ route('incoming-letters.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('incoming-letters.*') ? 'bg-gray-700' : '' }}">Surat Masuk</a>
         <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Arsip</a>
         <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Kategori</a>
         
@@ -27,8 +27,8 @@
         <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Surat
         </div>
-        <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Surat Masuk</a>
-        <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Tambah Surat</a>
+        <a href="{{ route('incoming-letters.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('incoming-letters.index') ? 'bg-gray-700' : '' }}">Surat Masuk</a>
+        <a href="{{ route('incoming-letters.create') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('incoming-letters.create') ? 'bg-gray-700' : '' }}">Tambah Surat</a>
         <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Arsip</a>
         
         <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
@@ -42,6 +42,7 @@
         <div class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Tugas Saya
         </div>
+        <a href="{{ route('incoming-letters.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('incoming-letters.*') ? 'bg-gray-700' : '' }}">Surat Masuk</a>
         <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Belum Diproses</a>
         <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Dalam Proses</a>
         <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Selesai</a>
