@@ -35,6 +35,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Manajemen Pengguna (Hanya Admin)
     Route::resource('users', \App\Http\Controllers\UserController::class)->except(['show']);
+
+    // Manajemen Organisasi (Hanya Admin)
+    Route::get('organizations', [\App\Http\Controllers\OrganizationController::class, 'index'])->name('organizations.index');
+    Route::post('organizations/department', [\App\Http\Controllers\OrganizationController::class, 'storeDepartment'])->name('organizations.department.store');
+    Route::delete('organizations/department/{department}', [\App\Http\Controllers\OrganizationController::class, 'destroyDepartment'])->name('organizations.department.destroy');
+    Route::post('organizations/position', [\App\Http\Controllers\OrganizationController::class, 'storePosition'])->name('organizations.position.store');
+    Route::delete('organizations/position/{position}', [\App\Http\Controllers\OrganizationController::class, 'destroyPosition'])->name('organizations.position.destroy');
 });
 
 Route::middleware('auth')->group(function () {
