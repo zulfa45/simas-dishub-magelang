@@ -32,6 +32,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Audit Log (Hanya Admin)
     Route::get('audit-logs', [\App\Http\Controllers\AuditLogController::class, 'index'])->name('audit-logs.index');
+
+    // Manajemen Pengguna (Hanya Admin)
+    Route::resource('users', \App\Http\Controllers\UserController::class)->except(['show']);
 });
 
 Route::middleware('auth')->group(function () {

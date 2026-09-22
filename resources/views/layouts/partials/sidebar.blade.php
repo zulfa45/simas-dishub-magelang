@@ -21,7 +21,7 @@
         </div>
         <a href="{{ route('news.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('news.*') ? 'bg-gray-700' : '' }}">Kelola Berita</a>
         <a href="{{ route('audit-logs.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('audit-logs.*') ? 'bg-gray-700' : '' }}">Audit Log</a>
-        <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Pengguna</a>
+        <a href="{{ route('users.index') }}" class="block px-4 py-2 rounded transition hover:bg-gray-700 {{ request()->routeIs('users.*') ? 'bg-gray-700' : '' }}">Pengguna</a>
         <a href="#" class="block px-4 py-2 rounded transition hover:bg-gray-700">Organisasi</a>
         @endrole
 
